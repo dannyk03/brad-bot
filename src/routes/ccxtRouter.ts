@@ -5,8 +5,6 @@ import * as spy from '../spy';
 var util = require('util');
 
 
-var mongoose     = require('mongoose');
-var botConfigModel      = require('mongoose').model('botConfig');
 var path = require('path'),
     fs = require('fs');
 // debugger

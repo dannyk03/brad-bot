@@ -7,7 +7,7 @@ import * as debug from 'debug';
 var db      = require('./mongo');
 
 import App from './App';
-db.connect(() => {
+// db.connect(() => {
 
 
   var fs = require('fs');
@@ -51,5 +51,5 @@ db.connect(() => {
 
 
 
-});
+// });
 
