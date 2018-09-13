@@ -101,14 +101,18 @@ export function getOrderBook(config) {
 	})).then(orderBooks => {
 		let i;
 		let volumeMin = parseFloat(config.volumeMin);
-
+		if (config.symbol == 'EFL/BTC')
+			debugger
 		let crate = rate[config.symbol.split('/')[1]] ? rate[config.symbol.split('/')[1]] : 0;
+		if (config.symbol.split('/')[1] == 'USDT')
+			crate = 1;
 		if (!crate) {
 			console.log('Non supported', config.symbol);
 			return {success: 0};
 		}
 		let prices:any = {};
 		//Calculate ask and bid price from orderbook of each market of each exchange
+		
 		orderBooks.map((orderBook,index)=>{
 			let res:any = {};
 			let sum = 0;
@@ -117,7 +121,7 @@ export function getOrderBook(config) {
 			for(i = 0; i < orderBook.bids.length; i ++) {
 				sum += orderBook.bids[i][1];
 				total += orderBook.bids[i][1]*orderBook.bids[i][0];
-				if (sum > volumeMin/crate)
+				if (total > volumeMin/crate)
 					break;
 			}
 			res.bid = total/sum;
@@ -128,7 +132,7 @@ export function getOrderBook(config) {
 			for(i = 0; i < orderBook.asks.length; i ++) {
 				sum += orderBook.asks[i][1];
 				total += orderBook.asks[i][1]*orderBook.asks[i][0];
-				if (sum > volumeMin/crate)
+				if (total > volumeMin/crate)
 					break;
 			}
 			res.ask = total/sum;
