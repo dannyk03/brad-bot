@@ -14,3 +14,4 @@ src/data.json
 .sendgrid.env
 
 logs/
+cert/

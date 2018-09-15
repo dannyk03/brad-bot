@@ -22,6 +22,7 @@ export function runSpy(spyConfig) {
 	})).then(result=>{
 		
 		symbols = [];
+
 		exchanges.map(ex=>{
 			let markets = Object.keys(ex.markets);
 			let exMarkets = [];
@@ -38,6 +39,7 @@ export function runSpy(spyConfig) {
 			exchanges.map(ex=>{
 
 				let markets = Object.keys(ex.markets);
+				
 				if (markets.indexOf(symbol) != -1) {
 					exs.push(ex.id);
 				}
@@ -52,8 +54,7 @@ export function runSpy(spyConfig) {
 		return Promise.all(exchanges.map((exchange,index)=>{
 			let sys = Object.keys(exchange.markets).filter(m=>symbols.indexOf(m)!=-1);
 			if (exchange.has['fetchTickers'] ) {
-
-				if (['yobit', 'liqui'].indexOf(exchange.id) != -1) {
+				if (['yobit', 'liqui', 'tidex'].indexOf(exchange.id) != -1) {
 					let promises = [];
 					for (let i = 0; i < sys.length; i += 100)
 						promises.push(exchange.fetchTickers(sys.splice(i, Math.min(100, sys.length - i * 100))));
@@ -82,8 +83,13 @@ export function runSpy(spyConfig) {
                 rate[key.split('/')[0]] = conversions[key].last;
               } 
             }
+
+            let currencies = {};
+            exchanges.map(ex=>{
+            	currencies[ex.id] = ex.currencies;
+            });
             //All Ticker data, watchingPairs: coin + markets, 
-			return {tickers, symbols, watchingPairs, hitbtc};
+			return {tickers, symbols, watchingPairs, hitbtc, currencies};
 		});
 	});
 }
@@ -101,8 +107,7 @@ export function getOrderBook(config) {
 	})).then(orderBooks => {
 		let i;
 		let volumeMin = parseFloat(config.volumeMin);
-		if (config.symbol == 'EFL/BTC')
-			debugger
+
 		let crate = rate[config.symbol.split('/')[1]] ? rate[config.symbol.split('/')[1]] : 0;
 		if (config.symbol.split('/')[1] == 'USDT')
 			crate = 1;
