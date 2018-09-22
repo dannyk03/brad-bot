@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc ",
-    "start": "tsc; node  --inspect dist/server.js "
-    
+    "start": "tsc; node  --inspect dist/server.js ",
+    "bot": "tsc; node  --inspect dist/bot.js "
   },
   "keywords": [],
   "author": "",
@@ -48,6 +48,7 @@
     "node-cron": "^1.2.1",
     "node-env-file": "^0.1.8",
     "node-file-logger": "^0.9.5",
+    "node-json-db": "^0.9.0",
     "request": "^2.69.0",
     "request-promise": "^4.2.2",
     "require-dir": "^1.0.0",

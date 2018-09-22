@@ -7,9 +7,7 @@ var util = require('util');
 
 var path = require('path'),
     fs = require('fs');
-// debugger
-// let baseExchange = new ccxt['hitbtc2'](config._doc.baseExchangeKey);
-//  { "apiKey": "7208602ece4275b6f6e8ff6805fe0b3c", "secret": "c15fc8fa6df5a43080b2ea51ff91f79d" }
+
 const ccxt = require ('ccxt')
 export class CcxtRouter {
   router: Router
