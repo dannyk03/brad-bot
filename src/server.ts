@@ -15,24 +15,11 @@ import App from './App';
   var https = require('https');
   let server:any = null;
   const port = normalizePort(process.env.PORT || 3000);
-  if(process.env.NODE_ENV == 'development') {
-    App.set('port', port);
-    
-    server = App.listen(port, function () {
-      console.log('Listening on port '+ port)
-    })
-
-  } else if(process.env.NODE_ENV == 'production') {
-
-    var privateKey  = fs.readFileSync('./cert/host.key', 'utf8');
-    var certificate = fs.readFileSync('./cert/host.cert', 'utf8');
-    var credentials = { key: privateKey, cert: certificate };
-
-    server = https.createServer(credentials, App);
-    server.listen(port);
-    server.on('error', onError);
-    server.on('listening', onListening); 
-  }
+  App.set('port', port);
+  
+  server = App.listen(port, function () {
+    console.log('Listening on port '+ port)
+  })
 
   function normalizePort(val: number|string): number|string|boolean {
     let port: number = (typeof val === 'string') ? parseInt(val, 10) : val;
