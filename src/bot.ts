@@ -57,7 +57,7 @@ var onmessage = function (ev) {
 			// // Required only if dateBasedFileNaming is set to false
 			// fileName: 'All_Logs',   
 			// // Required only if dateBasedFileNaming is set to true
-			fileNamePrefix: 'bot',
+			fileNamePrefix: botConfig._id+'_',
 			fileNameSuffix: '',
 			fileNameExtension: '.log',     
 
