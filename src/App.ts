@@ -56,8 +56,8 @@ class App {
       search2: ['ETH', 'USDT', 'USD'],
       search3: ['XRP', 'TRX', 'XLM', 'ADA', 'XVG', 'DTA', 'LTC', 'POWR', 'DGB', 'MONA', 'DOGE', 'CRW', 'BCH', 'RDD', 'XEM', 'NEO', 'SC', 'POLY', 'NEO', 'DASH'],
 
+      priceType: 'best',
       minimalVolumeAmount: 1,
-
       minimalProfitPercent: 1,
       fee: 0.001,
       exchangeKey: {

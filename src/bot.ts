@@ -97,6 +97,7 @@ var debugging =  true;
 // 				secret: '0c5bad9d0ef34d968387620f4b39819f'
 // 			},
 
+//      	priceType: 'best',
 // 			enableBot: true,
 // 			enableOrder: false,
 // 			priceInterval: 10,
@@ -285,84 +286,96 @@ async function findChance(sym1, sym2, sym3) {
 	let total = 0;
 	let i;
 	let volumeMin = botConfig.tradePercent*data[`B${sym1}`].free/100;
-	data.volumeMin = volumeMin;
 	if (volumeMin == 0) {
 		return { success: 0, data: {...data, message: `${sym1} ${sym2} ${sym3} No Balance`} };	
 	}
-	let crate = rate[sym1];
-	let orderBook = orderBooks[0];
+	data.volumeMin = volumeMin;
 
-	for(i = 0; i < orderBook.asks.length; i ++) {
-		sum += orderBook.asks[i][1];
-		total += orderBook.asks[i][1]*orderBook.asks[i][0];
-		if (total > volumeMin/crate)
-			break;
-	}
-	data[`P1`] = total/sum;
 	data[`P1H`] = tickers[0].high;
 	data[`P1L`] = tickers[0].low;
+	data[`P2H`] = tickers[1].high;
+	data[`P2L`] = tickers[1].low;
+	data[`P3H`] = tickers[2].high;
+	data[`P3L`] = tickers[2].low;
+
+	if (botConfig.priceType == 'best') {
+		data[`P1`] = orderBooks[0].asks[0][0];
+		data[`P2`] = orderBooks[1].asks[0][0];
+		data[`P3`] = orderBooks[2].bids[0][0];
+	} else if (botConfig.priceType == 'weigh') {
+
+		let crate = rate[sym1];
+		let orderBook = orderBooks[0];
+
+		for(i = 0; i < orderBook.asks.length; i ++) {
+			sum += orderBook.asks[i][1];
+			total += orderBook.asks[i][1]*orderBook.asks[i][0];
+			if (total > volumeMin/crate)
+				break;
+		}
+		data[`P1`] = total/sum;
+		if (sum == 0) {
+			let msg = `${mar1} Orderbook empty`;
+			return { success: 0, data: {...data, message: msg} };	
+		}
+		
+		sum = 0;
+		total = 0;
+		crate = rate[sym2];
+		orderBook = orderBooks[1];
+
+		for(i = 0; i < orderBook.asks.length; i ++) {
+			sum += orderBook.asks[i][1];
+			total += orderBook.asks[i][1]*orderBook.asks[i][0];
+			if (total > volumeMin/crate)
+				break;
+		}
+		data[`P2`] = total/sum;
+		
+		if (sum == 0) {
+			let msg = `${mar2} Orderbook empty`;
+			return { success: 0, data: {...data, message: msg} };	
+		}
+
+
+		sum = 0;
+		total = 0;
+		crate = rate[sym1];
+		orderBook = orderBooks[2];
+
+		for(i = 0; i < orderBook.bids.length; i ++) {
+			sum += orderBook.bids[i][1];
+			total += orderBook.bids[i][1]*orderBook.bids[i][0];
+			if (total > volumeMin/crate)
+				break;
+		}
+		data[`P3`] = total/sum;
+		if (sum == 0) {
+			let msg = `${mar3} Orderbook empty`;
+			return { success: 0, data: {...data, message: msg} };	
+		}
+
+
+
+	} else {
+		return {};
+	}
+
 	if (data[`P1`] > data[`P1H`] || data[`P1`] < data[`P1L`]) {
 		let msg = `${sym1} ${sym2} ${sym3} Price1 HL not matching P:${data[`P1`]} H: ${tickers[0].high} L: ${tickers[0].low}`;
 
 		return { success: 0, data: {...data, message: msg} };
 	}
-	if (sum == 0) {
-		let msg = `${mar1} Orderbook empty`;
-		return { success: 0, data: {...data, message: msg} };	
-	}
-	
-
-
-	sum = 0;
-	total = 0;
-	crate = rate[sym2];
-	orderBook = orderBooks[1];
-
-	for(i = 0; i < orderBook.asks.length; i ++) {
-		sum += orderBook.asks[i][1];
-		total += orderBook.asks[i][1]*orderBook.asks[i][0];
-		if (total > volumeMin/crate)
-			break;
-	}
-	data[`P2`] = total/sum;
-	data[`P2H`] = tickers[1].high;
-	data[`P2L`] = tickers[1].low;
 	if (data[`P2`] > data[`P2H`] || data[`P2`] < data[`P2L`]) {
 		let msg = `${sym1} ${sym2} ${sym3} Price2 HL not matching P:${data[`P2`]} H: ${tickers[1].high} L: ${tickers[1].low}`;
 
 		return { success: 0, data: {...data, message: msg} };
 	}
-	if (sum == 0) {
-		let msg = `${mar2} Orderbook empty`;
-		return { success: 0, data: {...data, message: msg} };	
-	}
-
-
-	sum = 0;
-	total = 0;
-	crate = rate[sym1];
-	orderBook = orderBooks[2];
-
-	for(i = 0; i < orderBook.bids.length; i ++) {
-		sum += orderBook.bids[i][1];
-		total += orderBook.bids[i][1]*orderBook.bids[i][0];
-		if (total > volumeMin/crate)
-			break;
-	}
-	data[`P3`] = total/sum;
-	data[`P3H`] = tickers[2].high;
-	data[`P3L`] = tickers[2].low;
 	if (data[`P3`] > data[`P3H`] || data[`P3`] < data[`P3L`]) {
 		let msg = `${sym1} ${sym2} ${sym3} Price3 HL not matching P:${data[`P3`]} H: ${tickers[2].high} L: ${tickers[2].low}`;
 
 		return { success: 0, data: {...data, message: msg} };
 	}
-	if (sum == 0) {
-		let msg = `${mar3} Orderbook empty`;
-		return { success: 0, data: {...data, message: msg} };	
-	}
-
-
 
 	let step1 = (volumeMin - volumeMin * botConfig.fee) / data[`P1`];
 	let step2 = (step1 - step1 * botConfig.fee) / data[`P2`];
