@@ -50,15 +50,15 @@ class App {
     workers.initWorkers([{
       _id: 'main',
       exchange: 'bittrex', //Exchange name from https://github.com/ccxt/ccxt
-      tradePercent: 40, //Trade 40 % of balance everytime when there's opportunity
+      tradePercent: 50, //Trade 40 % of balance everytime when there's opportunity
 
       search1: ['BTC'],
-      search2: ['ETH', 'USDT', 'USD'],
+      search2: ['ETH'],
       search3: ['XRP', 'TRX', 'XLM', 'ADA', 'XVG', 'DTA', 'LTC', 'POWR', 'DGB', 'MONA', 'DOGE', 'CRW', 'BCH', 'RDD', 'XEM', 'NEO', 'SC', 'POLY', 'NEO', 'DASH'],
 
       priceType: 'best', // best:just ask price or weigh: weighed price we talked before
       minimalVolumeAmount: 1, //1 BTC (coin in search1)
-      minimalProfitPercent: 1, //1 % profit
+      minimalProfitPercent: 0.01, //1 % profit
       fee: 0.001, //Fee on taker
       exchangeKey: {
         apiKey: 'f930780a07654e0a9e945b8c428ee0e2',
@@ -66,7 +66,7 @@ class App {
       },
 
       enableBot: true, // IF you enable this bot or not should be always true unless you are not going to run it at all.
-      enableOrder: false, // True if you would like to make actual orders.
+      enableOrder: true, // True if you would like to make actual orders.
       
     }]);
     workers.startWorkers();
