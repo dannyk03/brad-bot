@@ -174,7 +174,7 @@ async function start(config){
 						// statusObj.save({...statusObj, status: {...statusObj.status, [`${data.sym1}-${data.sym2}-${data.sym3}`]: data}});
 
 						
-						let order = await exchange.createMarketBuyOrder(data.mar1.name, (data.volumeMin - data.volumeMin * botConfig.fee) / data['P1']);
+						let order = await exchange.createLimitBuyOrder(data.mar1.name, (data.volumeMin - data.volumeMin * botConfig.fee) / data['P1'], data['P1']);
 						log.Info(JSON.stringify(order));
 						while (1) {
 							let orders = await exchange.fetchOpenOrders();
@@ -201,7 +201,7 @@ async function start(config){
 						balance = await exchange.fetchBalance();
 						log.Info(`${JSON.stringify(balance[sym1])} ${JSON.stringify(balance[sym2])} ${JSON.stringify(balance[sym3])}`);
 
-						order = await exchange.createMarketSellOrder(data.mar3.name, balance[data.sym3].free);
+						order = await exchange.createLimitSellOrder(data.mar3.name, balance[data.sym3].free, data['P3']);
 						log.Info(JSON.stringify(order));
 						while (1) {
 							let orders = await exchange.fetchOpenOrders();
