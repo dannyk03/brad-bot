@@ -50,15 +50,15 @@ class App {
     workers.initWorkers([{
       _id: 'main',
       exchange: 'bittrex',
-      tradePercent: 40,
+      tradePercent: 50,
 
       search1: ['BTC'],
-      search2: ['ETH', 'USDT', 'USD'],
+      search2: ['ETH'],
       search3: ['XRP', 'TRX', 'XLM', 'ADA', 'XVG', 'DTA', 'LTC', 'POWR', 'DGB', 'MONA', 'DOGE', 'CRW', 'BCH', 'RDD', 'XEM', 'NEO', 'SC', 'POLY', 'NEO', 'DASH'],
 
       priceType: 'best',
       minimalVolumeAmount: 1,
-      minimalProfitPercent: 1,
+      minimalProfitPercent: 0.01,
       fee: 0.001,
       exchangeKey: {
         apiKey: 'f930780a07654e0a9e945b8c428ee0e2',
@@ -66,7 +66,7 @@ class App {
       },
 
       enableBot: true,
-      enableOrder: false,
+      enableOrder: true,
       priceInterval: 10,
     }]);
     workers.startWorkers();
