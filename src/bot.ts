@@ -80,27 +80,28 @@ var debugging =  true;
 // 	data: {
 // 		command: 'start',
 // 		config: {
+
 // 			_id: 'main',
-// 			exchange: 'bittrex',
-// 			tradePercent: 40,
+// 			exchange: 'bittrex', //Exchange name from https://github.com/ccxt/ccxt
+// 			tradePercent: 50, //Trade 40 % of balance everytime when there's opportunity
 
 // 			search1: ['BTC'],
-// 			search2: ['ETH', 'USDT', 'USD'],
-// 			search3: ['XRP', 'TRX', 'XLM', 'ADA', 'XVG', 'DTA', 'LTC', 'POWR', 'DGB', 'MONA', 'DOGE', 'CRW', 'BCH', 'RDD', 'XEM', 'NEO', 'SC', 'POLY', 'NEO', 'DASH'],
+// 			search2: ['ETH'],
+// 			// search3: ['XRP', 'TRX', 'XLM', 'ADA', 'XVG', 'DTA', 'LTC', 'POWR', 'DGB', 'MONA', 'DOGE', 'CRW', 'BCH', 'RDD', 'XEM', 'NEO', 'SC', 'POLY', 'NEO', 'DASH'],
+// 			search3: ['DASH'],
 
-// 			minimalVolumeAmount: 1,
+// 			priceType: 'best', // best:just ask price or weigh: weighed price we talked before
+// 			minimalVolumeAmount: 1, //1 BTC (coin in search1)
+// 			minimalProfitPercent: 0.01, //1 % profit
+// 			fee: 0.0025, //Fee on taker
 
-// 			minimalProfitPercent: 1,
-// 			fee: 0.001,
 // 			exchangeKey: {
 // 				apiKey: 'f930780a07654e0a9e945b8c428ee0e2',
 // 				secret: '0c5bad9d0ef34d968387620f4b39819f'
 // 			},
 
-//      	priceType: 'best',
-// 			enableBot: true,
-// 			enableOrder: false,
-// 			priceInterval: 10,
+// 			enableBot: true, // IF you enable this bot or not should be always true unless you are not going to run it at all.
+// 			enableOrder: true, // True if you would like to make actual orders.
 //       	}
 // 	}	
 // })
@@ -167,6 +168,7 @@ async function start(config){
 							await wait(1000);
 							continue;
 						}
+
 						if (!botConfig.enableOrder)
 							continue;
 						let data = result.data;

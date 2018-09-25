@@ -59,7 +59,7 @@ class App {
       priceType: 'best', // best:just ask price or weigh: weighed price we talked before
       minimalVolumeAmount: 1, //1 BTC (coin in search1)
       minimalProfitPercent: 0.01, //1 % profit
-      fee: 0.001, //Fee on taker
+      fee: 0.0025, //Fee on taker
       exchangeKey: {
         apiKey: 'f930780a07654e0a9e945b8c428ee0e2',
         secret: '0c5bad9d0ef34d968387620f4b39819f'
