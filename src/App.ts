@@ -57,7 +57,7 @@ class App {
       search3: ['DOGE', 'LTC', 'ETH', 'PAC', 'TOKEN', 'DASH', 'WAVES', 'LSK', 'CAT', 'SMART', 'TRX', 'LIZA', 'BNB', 'BCA', 'MDZ', 'BCC', 'ZEC'],
 
       priceType: 'best', // best:just ask price or weigh: weighed price we talked before
-      minimalVolumeAmount: 1, //1 BTC (coin in search1)
+      minimalVolumeAmount: 0.01, //1 BTC (coin in search1)
       minimalProfitPercent: 0.01, //1 % profit
       fee: 0.002, //Fee on taker
       exchangeKey: {
