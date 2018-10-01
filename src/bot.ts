@@ -76,35 +76,34 @@ var onmessage = function (ev) {
 };
 // var debugging = process.env.DEBUGGING;
 var debugging =  true;
-onmessage({
-	data: {
-		command: 'start',
-		config: {
-	      _id: 'yobitbot',
-	      exchange: 'yobit', //Exchange name from https://github.com/ccxt/ccxt
-	      tradePercent: 50, //Trade 40 % of balance everytime when there's opportunity
+// onmessage({
+// 	data: {
+// 		command: 'start',
+// 		config: {
+// 	      _id: 'main',
+// 	      exchange: 'bittrex', //Exchange name from https://github.com/ccxt/ccxt
+// 	      tradePercent: 50, //Trade 40 % of balance everytime when there's opportunity
 
-	      search1: ['BTC'],
-	      search2: ['ETH'],
-	      search3: ['DOGE'],
-	      // search2: ['ETH', 'DOGE', 'WAVES'],
-	      // search3: ['DOGE', 'LTC', 'ETH', '$PAC', 'TOKEN', 'DASH', 'WAVES', 'LSK', 'CAT', 'SMART', 'TRX', 'LIZA', 'BNB', 'BCA', 'MDZ', 'BCC', 'ZEC'],
+// 	      search1: ['BTC'],
+// 	      search2: ['ETH'],
+// 	      search3: ['XLM'],
+// 	      // search3: ['XRP', 'TRX', 'XLM', 'ADA', 'XVG', 'DTA', 'LTC', 'POWR', 'DGB', 'MONA', 'DOGE', 'CRW', 'BCH', 'RDD', 'XEM', 'NEO', 'SC', 'POLY', 'NEO', 'DASH'],
 
-	      priceType: 'best', // best:just ask price or weigh: weighed price we talked before
-	      minimalVolumeAmount: 0.01, //1 BTC (coin in search1)
-	      minimalProfitPercent: 0.01, //1 % profit
-	      fee: 0.002, //Fee on taker
-	      exchangeKey: {
-	        apiKey: 'E8346A918929C01939D80EE587D1ECB8',
-	        secret: '4ccdc98501501059263b5fd253128e12'
-	      },
+// 	      priceType: 'best', // best:just ask price or weigh: weighed price we talked before
+// 	      minimalVolumeAmount: 1, //1 BTC (coin in search1)
+// 	      minimalProfitPercent: 1, //1 % profit
+// 	      fee: 0.0025, //Fee on taker
+// 	      exchangeKey: {
+// 	        apiKey: 'f930780a07654e0a9e945b8c428ee0e2',
+// 	        secret: '0c5bad9d0ef34d968387620f4b39819f'
+// 	      },
 
-	      enableBot: true, // IF you enable this bot or not should be always true unless you are not going to run it at all.
-	      enableOrder: true, // True if you would like to make actual orders.
+// 	      enableBot: true, // IF you enable this bot or not should be always true unless you are not going to run it at all.
+// 	      enableOrder: true, // True if you would like to make actual orders.
 	      
-	    }
-	}	
-})
+// 	    }
+// 	}	
+// })
 
 
 
@@ -148,7 +147,7 @@ async function start(config){
 
 		// let hitbtcTickers = hitbtc.fetchTickers();
 
-		// while(1) {
+		while(1) {
 			try {
 				let sym1, sym2, sym3;
 				for (let i = 0; i < botConfig.search1.length; i ++) {
@@ -169,14 +168,14 @@ async function start(config){
 							//find chance
 							let result = await findChance(sym1, sym2, sym3);
 							
-							// if (!result.success) {
-							// 	log.Info(result.data.message);
-							// 	await wait(1000);
-							// 	continue;
-							// }
+							if (!result.success) {
+								log.Info(result.data.message);
+								await wait(1000);
+								continue;
+							}
 
-							// if (!botConfig.enableOrder)
-							// 	continue;
+							if (!botConfig.enableOrder)
+								continue;
 							let data = result.data;
 							log.Info(JSON.stringify(data));
 
@@ -185,6 +184,8 @@ async function start(config){
 							
 							let order = await exchange.createLimitBuyOrder(data.mar1.name, (data.volumeMin - data.volumeMin * botConfig.fee) / data['P1'], data['P1']);
 							log.Info(JSON.stringify(order));
+
+							await wait(1000);
 							while (1) {
 								let orders = await exchange.fetchOpenOrders(data.mar1.name);
 								if (orders.length == 0) {
@@ -200,6 +201,8 @@ async function start(config){
 
 							order = await exchange.createLimitBuyOrder(data.mar2.name, (balance[data.sym2].free - balance[data.sym2].free*botConfig.fee) / data['P2'], data['P2']);
 							log.Info(JSON.stringify(order));
+
+							await wait(1000);
 							while (1) {
 								let orders = await exchange.fetchOpenOrders(data.mar2.name);
 								if (orders.length == 0) {
@@ -212,6 +215,7 @@ async function start(config){
 
 							order = await exchange.createLimitSellOrder(data.mar3.name, balance[data.sym3].free, data['P3']);
 							log.Info(JSON.stringify(order));
+							await wait(1000);
 							while (1) {
 								let orders = await exchange.fetchOpenOrders(data.mar3.name);
 								if (orders.length == 0) {
@@ -221,7 +225,7 @@ async function start(config){
 							}
 							balance = await exchange.fetchBalance();
 							log.Info(`${JSON.stringify(balance[sym1])} ${JSON.stringify(balance[sym2])} ${JSON.stringify(balance[sym3])}`);
-							debugger
+
 						}
 					}
 				}
@@ -230,7 +234,7 @@ async function start(config){
 			} catch (err) {
 				log.Info(`Error ${JSON.stringify(err)}, ${err.message}`);
 			}
-		// };
+		};
 
 
 
