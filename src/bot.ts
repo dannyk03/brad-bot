@@ -76,37 +76,35 @@ var onmessage = function (ev) {
 };
 // var debugging = process.env.DEBUGGING;
 var debugging =  true;
-// onmessage({
-// 	data: {
-// 		command: 'start',
-// 		config: {
-// 			_id: 'main',
-// 			exchange: 'yobit', //Exchange name from https://github.com/ccxt/ccxt
-// 			tradePercent: 10, //Trade 40 % of balance everytime when there's opportunity
+onmessage({
+	data: {
+		command: 'start',
+		config: {
+	      _id: 'yobitbot',
+	      exchange: 'yobit', //Exchange name from https://github.com/ccxt/ccxt
+	      tradePercent: 50, //Trade 40 % of balance everytime when there's opportunity
 
-// 			search1: ['BTC'],
-// 			// search2: ['WAVES'],
-// 			// search3: ['$PAC'],
-// 			search2: ['ETH'],
-// 			search3: ['DOGE'],
-// 			// search2: ['ETH', 'DOGE', 'WAVES'],
-// 			// search3: ['DOGE', 'LTC', 'ETH', 'PAC', 'TOKEN', 'DASH', 'WAVES', 'LSK', 'CAT', 'SMART', 'TRX', 'LIZA', 'BNB', 'BCA', 'MDZ', 'BCC', 'ZEC'],
+	      search1: ['BTC'],
+	      search2: ['ETH'],
+	      search3: ['DOGE'],
+	      // search2: ['ETH', 'DOGE', 'WAVES'],
+	      // search3: ['DOGE', 'LTC', 'ETH', '$PAC', 'TOKEN', 'DASH', 'WAVES', 'LSK', 'CAT', 'SMART', 'TRX', 'LIZA', 'BNB', 'BCA', 'MDZ', 'BCC', 'ZEC'],
 
-// 			priceType: 'best', // best:just ask price or weigh: weighed price we talked before
-// 			minimalVolumeAmount: 1, //1 BTC (coin in search1)
-// 			minimalProfitPercent: 0.01, //1 % profit
-// 			fee: 0.002, //Fee on taker
-// 			exchangeKey: {
-// 			apiKey: 'E8346A918929C01939D80EE587D1ECB8',
-// 			secret: '4ccdc98501501059263b5fd253128e12',
-// 	      	// verbose: true
-// 			},
+	      priceType: 'best', // best:just ask price or weigh: weighed price we talked before
+	      minimalVolumeAmount: 0.01, //1 BTC (coin in search1)
+	      minimalProfitPercent: 0.01, //1 % profit
+	      fee: 0.002, //Fee on taker
+	      exchangeKey: {
+	        apiKey: 'E8346A918929C01939D80EE587D1ECB8',
+	        secret: '4ccdc98501501059263b5fd253128e12'
+	      },
 
-// 			enableBot: 	true, // IF you enable this bot or not should be always true unless you are not going to run it at all.
-// 			enableOrder: false, // True if you would like to make actual orders.
-// 	    }
-// 	}	
-// })
+	      enableBot: true, // IF you enable this bot or not should be always true unless you are not going to run it at all.
+	      enableOrder: true, // True if you would like to make actual orders.
+	      
+	    }
+	}	
+})
 
 
 
@@ -114,7 +112,13 @@ async function start(config){
 
 	log.Info(`BOT Bot Started BOT`);
 	try {
-		exchange = new ccxt[botConfig.exchange](botConfig.exchangeKey);
+		exchange = new ccxt[botConfig.exchange]({
+			...botConfig.exchangeKey,
+			nonce: function () { return this.seconds () },
+			enableRateLimit: true,
+			rateLimit: 1000,
+			timeout: 20000,
+		});
 		let hitbtc = new ccxt['hitbtc2']();
 		BalanceModel = (mongoose.models && mongoose.models['balance_'+botConfig._id]
 					  ? mongoose.models['balance_'+botConfig._id]
@@ -144,7 +148,7 @@ async function start(config){
 
 		// let hitbtcTickers = hitbtc.fetchTickers();
 
-		while(1) {
+		// while(1) {
 			try {
 				let sym1, sym2, sym3;
 				for (let i = 0; i < botConfig.search1.length; i ++) {
@@ -165,14 +169,14 @@ async function start(config){
 							//find chance
 							let result = await findChance(sym1, sym2, sym3);
 							
-							if (!result.success) {
-								log.Info(result.data.message);
-								await wait(1000);
-								continue;
-							}
+							// if (!result.success) {
+							// 	log.Info(result.data.message);
+							// 	await wait(1000);
+							// 	continue;
+							// }
 
-							if (!botConfig.enableOrder)
-								continue;
+							// if (!botConfig.enableOrder)
+							// 	continue;
 							let data = result.data;
 							log.Info(JSON.stringify(data));
 
@@ -226,7 +230,7 @@ async function start(config){
 			} catch (err) {
 				log.Info(`Error ${JSON.stringify(err)}, ${err.message}`);
 			}
-		};
+		// };
 
 
 
