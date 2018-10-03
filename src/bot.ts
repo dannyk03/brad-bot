@@ -81,12 +81,12 @@ var debugging =  true;
 // 		command: 'start',
 // 		config: {
 // 	      _id: 'main',
-// 	      exchange: 'bittrex', //Exchange name from https://github.com/ccxt/ccxt
+// 	      exchange: 'yobit', //Exchange name from https://github.com/ccxt/ccxt
 // 	      tradePercent: 50, //Trade 40 % of balance everytime when there's opportunity
 
 // 	      search1: ['BTC'],
 // 	      search2: ['ETH'],
-// 	      search3: ['XLM'],
+// 	      search3: ['FTO'],
 // 	      // search3: ['XRP', 'TRX', 'XLM', 'ADA', 'XVG', 'DTA', 'LTC', 'POWR', 'DGB', 'MONA', 'DOGE', 'CRW', 'BCH', 'RDD', 'XEM', 'NEO', 'SC', 'POLY', 'NEO', 'DASH'],
 
 // 	      priceType: 'best', // best:just ask price or weigh: weighed price we talked before
@@ -94,12 +94,13 @@ var debugging =  true;
 // 	      minimalProfitPercent: 1, //1 % profit
 // 	      fee: 0.0025, //Fee on taker
 // 	      exchangeKey: {
-// 	        apiKey: 'f930780a07654e0a9e945b8c428ee0e2',
-// 	        secret: '0c5bad9d0ef34d968387620f4b39819f'
+// 	        apiKey: 'E8346A918929C01939D80EE587D1ECB8',
+// 	        secret: '4ccdc98501501059263b5fd253128e12',
+// 	        verbose: false
 // 	      },
 
 // 	      enableBot: true, // IF you enable this bot or not should be always true unless you are not going to run it at all.
-// 	      enableOrder: true, // True if you would like to make actual orders.
+// 	      enableOrder: false, // True if you would like to make actual orders.
 	      
 // 	    }
 // 	}	
@@ -174,8 +175,14 @@ async function start(config){
 								continue;
 							}
 
+							if (!result.data.balance[sym1] || !result.data.balance[sym2] || !result.data.balance[sym3]) {
+								log.Info(`${sym1} ${sym2} ${sym3}, one of balance is not accessible`);
+								continue;
+							}
+
 							if (!botConfig.enableOrder)
 								continue;
+							continue
 							let data = result.data;
 							log.Info(JSON.stringify(data));
 
@@ -294,10 +301,6 @@ async function findChance(sym1, sym2, sym3) {
 	data[`B${sym2}`] = balance[sym2];
 	data[`B${sym3}`] = balance[sym3];
 
-
-
-
-
 	let sum = 0;
 	let total = 0;
 	let i;
@@ -407,7 +410,7 @@ async function findChance(sym1, sym2, sym3) {
 	}
 	log.Info(`${sym1} ${sym2} ${sym3} ${profitability} SUCCESS`);
 
-	return { success: 1, data: {...data, message: 'SUCCESS'} };	
+	return { success: 1, data: {...data, message: 'SUCCESS', balance: balance} };	
 
 	}catch(err) {
 		console.log(err);
