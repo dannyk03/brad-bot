@@ -196,6 +196,7 @@ async function start(config){
 							while (1) {
 								let orders = await exchange.fetchOpenOrders(data.mar1.name);
 								if (orders.length == 0) {
+									await wait(1000);
 									break;
 								}
 								await wait(1000);
@@ -213,6 +214,7 @@ async function start(config){
 							while (1) {
 								let orders = await exchange.fetchOpenOrders(data.mar2.name);
 								if (orders.length == 0) {
+									await wait(1000);
 									break;
 								}
 								await wait(1000);
@@ -226,6 +228,7 @@ async function start(config){
 							while (1) {
 								let orders = await exchange.fetchOpenOrders(data.mar3.name);
 								if (orders.length == 0) {
+									await wait(1000);
 									break;
 								}
 								await wait(1000);
