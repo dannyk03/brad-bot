@@ -182,7 +182,7 @@ async function start(config){
 
 							if (!botConfig.enableOrder)
 								continue;
-							continue
+							
 							let data = result.data;
 							log.Info(JSON.stringify(data));
 
