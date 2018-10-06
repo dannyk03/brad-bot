@@ -71,11 +71,11 @@ class App {
       },{
        _id: 'cryptopiabot',
       exchange: 'cryptopia', //Exchange name from https://github.com/ccxt/ccxt
-      tradePercent: 50, //Trade 40 % of balance everytime when there's opportunity
+      tradePercent: 100, //Trade 40 % of balance everytime when there's opportunity
 
       search1: ['BTC'],
       search2: ['LTC', 'DOGE'],
-      search3: ['ETN', 'ETH', 'TPAY', 'PENG', 'UNIT', 'DOGE', 'DGB', 'RDD', 'XSN', 'XP', 'IVY', 'ECA', 'XCASH', 'XMR', 'PHO', 'DIME', 'CTL', 'ARC'],
+      search3: ['ETN', 'ETH', 'TPAY', 'LGS', 'TOA', 'PRG', 'PENG', 'UNIT', 'DOGE', 'DGB', 'RDD', 'XSN', 'XP', 'IVY', 'ECA', 'XCASH', 'XMR', 'PHO', 'DIME', 'CTL', 'ARC'],
 
       priceType: 'weigh', // best:just ask price or weigh: weighed price we talked before
       minimalVolumeAmount: 0.01, //1 BTC (coin in search1)
@@ -87,7 +87,7 @@ class App {
       },
 
       enableBot: true, // IF you enable this bot or not should be always true unless you are not going to run it at all.
-      enableOrder: false, // True if you would like to make actual orders.
+      enableOrder: true, // True if you would like to make actual orders.
 
     },{
       _id: 'yobitbot',
@@ -98,7 +98,7 @@ class App {
       search2: ['ETH', 'DOGE', 'WAVES'],
       search3: ['DOGE', 'LTC', 'PLC', 'NOAH', 'RNTB', 'FTO', 'NYC', 'ETH', '$PAC', 'TOKEN', 'DASH', 'WAVES', 'LSK', 'CAT', 'SMART', 'TRX', 'LIZA', 'BNB', 'BCA', 'MDZ', 'BCC', 'ZEC'],
 
-      priceType: 'weigh', // best:just ask price or weigh: weighed price we talked before
+      priceType: 'best', // best:just ask price or weigh: weighed price we talked before
       minimalVolumeAmount: 0.01, //1 BTC (coin in search1)
       minimalProfitPercent: 0.01, //1 % profit
       fee: 0.002, //Fee on taker
