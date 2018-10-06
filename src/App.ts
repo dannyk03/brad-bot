@@ -71,7 +71,7 @@ class App {
       },{
        _id: 'cryptopiabot',
       exchange: 'cryptopia', //Exchange name from https://github.com/ccxt/ccxt
-      tradePercent: 100, //Trade 40 % of balance everytime when there's opportunity
+      tradePercent: 80, //Trade 40 % of balance everytime when there's opportunity
 
       search1: ['BTC'],
       search2: ['LTC', 'DOGE'],

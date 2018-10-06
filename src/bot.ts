@@ -80,33 +80,35 @@ var debugging =  true;
 // 	data: {
 // 		command: 'start',
 // 		config: {
-// 	      _id: 'main',
-// 	      exchange: 'yobit', //Exchange name from https://github.com/ccxt/ccxt
-// 	      tradePercent: 50, //Trade 40 % of balance everytime when there's opportunity
+// 	       _id: 'cryptopiabot',
+// 	      exchange: 'cryptopia', //Exchange name from https://github.com/ccxt/ccxt
+// 	      tradePercent: 80, //Trade 40 % of balance everytime when there's opportunity
 
 // 	      search1: ['BTC'],
-// 	      search2: ['ETH'],
-// 	      search3: ['FTO'],
-// 	      // search3: ['XRP', 'TRX', 'XLM', 'ADA', 'XVG', 'DTA', 'LTC', 'POWR', 'DGB', 'MONA', 'DOGE', 'CRW', 'BCH', 'RDD', 'XEM', 'NEO', 'SC', 'POLY', 'NEO', 'DASH'],
+// 	      search2: ['DOGE'],
+// 	      search3: ['ETN'],
 
-// 	      priceType: 'best', // best:just ask price or weigh: weighed price we talked before
-// 	      minimalVolumeAmount: 1, //1 BTC (coin in search1)
-// 	      minimalProfitPercent: 1, //1 % profit
-// 	      fee: 0.0025, //Fee on taker
+// 	      // search1: ['BTC'],
+// 	      // search2: ['LTC', 'DOGE'],
+// 	      // search3: ['ETN', 'ETH', 'TPAY', 'LGS', 'TOA', 'PRG', 'PENG', 'UNIT', 'DOGE', 'DGB', 'RDD', 'XSN', 'XP', 'IVY', 'ECA', 'XCASH', 'XMR', 'PHO', 'DIME', 'CTL', 'ARC'],
+
+// 	      priceType: 'weigh', // best:just ask price or weigh: weighed price we talked before
+// 	      minimalVolumeAmount: 0.01, //1 BTC (coin in search1)
+// 	      minimalProfitPercent: 0.01, //1 % profit
+// 	      fee: 0.002, //Fee on taker
 // 	      exchangeKey: {
-// 	        apiKey: 'E8346A918929C01939D80EE587D1ECB8',
-// 	        secret: '4ccdc98501501059263b5fd253128e12',
-// 	        verbose: false
+// 	        apiKey: 'a960a1dece9d4c7ca23e03d63e95e3af',
+// 	        secret: 'Q9S561dBgwuLW1G4eyGbteJq0E1J5XTzZ3X0YAzCETI='
 // 	      },
 
 // 	      enableBot: true, // IF you enable this bot or not should be always true unless you are not going to run it at all.
-// 	      enableOrder: false, // True if you would like to make actual orders.
-	      
+// 	      enableOrder: true, // True if you would like to make actual orders.
+
 // 	    }
 // 	}	
 // })
 
-
+const isLive = true;
 
 async function start(config){
 
@@ -169,18 +171,19 @@ async function start(config){
 							//find chance
 							let result = await findChance(sym1, sym2, sym3);
 							
-							if (!result.success) {
+							if (!result.success && isLive) {
 								log.Info(result.data.message);
 								await wait(1000);
 								continue;
 							}
 
-							if (!result.data.balance[sym1] || !result.data.balance[sym2] || !result.data.balance[sym3]) {
+							if (isLive  && 
+								(!result.balance[sym1] || !result.balance[sym2] || !result.balance[sym3])) {
 								log.Info(`${sym1} ${sym2} ${sym3}, one of balance is not accessible`);
 								continue;
 							}
 
-							if (!botConfig.enableOrder)
+							if (!botConfig.enableOrder && isLive)
 								continue;
 							
 							let data = result.data;
@@ -188,7 +191,7 @@ async function start(config){
 
 							// statusObj.save({...statusObj, status: {...statusObj.status, [`${data.sym1}-${data.sym2}-${data.sym3}`]: data}});
 
-							
+							debugger
 							let order = await exchange.createLimitBuyOrder(data.mar1.name, (data.volumeMin - data.volumeMin * botConfig.fee) / data['P1'], data['P1']);
 							log.Info(JSON.stringify(order));
 
@@ -309,7 +312,7 @@ async function findChance(sym1, sym2, sym3) {
 	let i;
 	let volumeMin = botConfig.tradePercent*data[`B${sym1}`].free/100;
 	if (volumeMin == 0) {
-		return { success: 0, data: {...data, message: `${sym1} ${sym2} ${sym3} No Balance`} };	
+		return { success: 0, data: {...data, message: `${sym1} ${sym2} ${sym3} No Balance`}, balance: balance };	
 	}
 	data.volumeMin = volumeMin;
 
@@ -338,7 +341,7 @@ async function findChance(sym1, sym2, sym3) {
 		data[`P1`] = total/sum;
 		if (sum == 0) {
 			let msg = `${mar1} Orderbook empty`;
-			return { success: 0, data: {...data, message: msg} };	
+			return { success: 0, data: {...data, message: msg}, balance: balance };	
 		}
 		
 		sum = 0;
@@ -356,7 +359,7 @@ async function findChance(sym1, sym2, sym3) {
 		
 		if (sum == 0) {
 			let msg = `${mar2} Orderbook empty`;
-			return { success: 0, data: {...data, message: msg} };	
+			return { success: 0, data: {...data, message: msg}, balance: balance };	
 		}
 
 
@@ -374,7 +377,7 @@ async function findChance(sym1, sym2, sym3) {
 		data[`P3`] = total/sum;
 		if (sum == 0) {
 			let msg = `${mar3} Orderbook empty`;
-			return { success: 0, data: {...data, message: msg} };	
+			return { success: 0, data: {...data, message: msg} , balance: balance};	
 		}
 
 
@@ -386,17 +389,17 @@ async function findChance(sym1, sym2, sym3) {
 	if (data[`P1`] > data[`P1H`] || data[`P1`] < data[`P1L`]) {
 		let msg = `${sym1} ${sym2} ${sym3} Price1 HL not matching P:${data[`P1`]} H: ${tickers[0].high} L: ${tickers[0].low}`;
 
-		return { success: 0, data: {...data, message: msg} };
+		return { success: 0, data: {...data, message: msg}, balance: balance };
 	}
 	if (data[`P2`] > data[`P2H`] || data[`P2`] < data[`P2L`]) {
 		let msg = `${sym1} ${sym2} ${sym3} Price2 HL not matching P:${data[`P2`]} H: ${tickers[1].high} L: ${tickers[1].low}`;
 
-		return { success: 0, data: {...data, message: msg} };
+		return { success: 0, data: {...data, message: msg} , balance: balance};
 	}
 	if (data[`P3`] > data[`P3H`] || data[`P3`] < data[`P3L`]) {
 		let msg = `${sym1} ${sym2} ${sym3} Price3 HL not matching P:${data[`P3`]} H: ${tickers[2].high} L: ${tickers[2].low}`;
 
-		return { success: 0, data: {...data, message: msg} };
+		return { success: 0, data: {...data, message: msg}, balance: balance };
 	}
 
 	let step1 = (volumeMin - volumeMin * botConfig.fee) / data[`P1`];
@@ -409,11 +412,11 @@ async function findChance(sym1, sym2, sym3) {
 
 		let msg = `${sym1} ${sym2} ${sym3} ${profitability} is lower than ${botConfig.minimalProfitPercent}`;
 
-		return { success: 0, data: {...data, message: msg} };	
+		return { success: 0, data: {...data, message: msg} , balance: balance};	
 	}
 	log.Info(`${sym1} ${sym2} ${sym3} ${profitability} SUCCESS`);
-
-	return { success: 1, data: {...data, message: 'SUCCESS', balance: balance} };	
+	debugger
+	return { success: 1, data: {...data, message: 'SUCCESS'}, balance: balance }
 
 	}catch(err) {
 		console.log(err);
